@@ -4,12 +4,14 @@ import { useState } from 'react'
 import { ArrowDownRight, ArrowRight, Menu, Search, ShoppingBag, X } from 'lucide-react'
 import ProductShowcase from './components/ProductShowcase'
 
-type Product = { name: string; category: string; type: string; price: string; image: string; tag?: string }
+type Product = { slug: string; name: string; category: string; type: string; price: string; image: string; tag?: string }
 const products: Product[] = [
-  { name: 'The Everyday Tee', category: 'Tops', type: 'Heavyweight cotton / Ink', price: '₹2,490', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85', tag: 'New' },
-  { name: 'Relaxed Overshirt', category: 'Tops', type: 'Organic twill / Bone', price: '₹4,990', image: 'https://images.unsplash.com/photo-1598808503746-f34c53b9323e?auto=format&fit=crop&w=900&q=85' },
-  { name: 'Studio Trouser', category: 'Bottoms', type: 'Cotton linen / Stone', price: '₹4,490', image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=85', tag: 'Bestseller' },
-  { name: 'Daily Short', category: 'Bottoms', type: 'Cotton poplin / Ink', price: '₹2,990', image: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=900&q=85' }
+  { slug: 'everyday-tee', name: 'The Everyday Tee', category: 'Tops', type: 'Heavyweight cotton / Ink', price: '₹2,490', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85', tag: 'New' },
+  { slug: 'relaxed-overshirt', name: 'Relaxed Overshirt', category: 'Tops', type: 'Organic twill / Bone', price: '₹4,990', image: 'https://images.unsplash.com/photo-1598808503746-f34c53b9323e?auto=format&fit=crop&w=900&q=85' },
+  { slug: 'boxy-shirt', name: 'Boxy Shirt', category: 'Tops', type: 'Washed cotton / White', price: '₹3,490', image: 'https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=900&q=85' },
+  { slug: 'studio-trouser', name: 'Studio Trouser', category: 'Bottoms', type: 'Cotton linen / Stone', price: '₹4,490', image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=85', tag: 'Bestseller' },
+  { slug: 'daily-short', name: 'Daily Short', category: 'Bottoms', type: 'Cotton poplin / Ink', price: '₹2,990', image: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=900&q=85' },
+  { slug: 'utility-pant', name: 'Utility Pant', category: 'Bottoms', type: 'Cotton canvas / Olive', price: '₹5,290', image: 'https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=900&q=85', tag: 'Low stock' }
 ]
 
 export default function Home() {
