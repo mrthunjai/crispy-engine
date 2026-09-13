@@ -16,7 +16,7 @@ export default function Home() {
   const [menu, setMenu] = useState(false); const [cart, setCart] = useState<Product[]>([]); const [search, setSearch] = useState(false)
   const add = (p: Product) => setCart([...cart, p])
   return <main>
-    <div className="intro-overlay" aria-hidden="true"><div className="intro-logo">KESHEV</div></div>
+    <div className="intro-overlay" aria-hidden="true"><div className="intro-logo">{['K','E','S','H','E','V'].map((letter,index)=><span key={`${letter}-${index}`} style={{animationDelay:`${index*0.12}s`}}>{letter}</span>)}</div></div>
     <header className="fixed top-0 z-30 flex w-full items-center justify-between bg-ink px-5 py-5 text-white md:px-10">
       <div className="flex items-center gap-8 text-[10px] uppercase tracking-[.24em]"><button className="md:hidden" onClick={() => setMenu(!menu)}><Menu size={18}/></button><nav className="hidden gap-7 md:flex"><Link href="/about">About</Link><Link href="/shop">Shop</Link><Link href="/">Home</Link><Link href="/journal">Journal</Link></nav></div>
       <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold tracking-[-.08em]">KESHEV</Link>
