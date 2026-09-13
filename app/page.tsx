@@ -17,9 +17,9 @@ export default function Home() {
   const add = (p: Product) => setCart([...cart, p])
   return <main>
     <div className="intro-overlay" aria-hidden="true"><div className="intro-logo">{['K','E','S','H','E','V'].map((letter,index)=><span key={`${letter}-${index}`} style={{animationDelay:`${index*0.12}s`}}>{letter}</span>)}</div></div>
-    <header className="fixed top-0 z-30 flex h-[68px] w-full items-center justify-between bg-ink px-5 py-0 text-white md:px-10">
+    <header className="fixed top-0 z-30 flex h-16 w-full items-center justify-between bg-ink px-5 py-0 text-white md:px-10">
       <div className="flex items-center gap-8 text-[10px] uppercase tracking-[.24em]"><button className="md:hidden" onClick={() => setMenu(!menu)}><Menu size={18}/></button><nav className="hidden gap-7 md:flex"><Link href="/about">About</Link><Link href="/shop">Shop</Link><Link href="/">Home</Link><Link href="/journal">Journal</Link></nav></div>
-      <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold tracking-[-.08em]">KESHEV</Link>
+      <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold leading-none tracking-[-.08em]">KESHEV</Link>
       <div className="flex items-center gap-5 text-[10px] uppercase tracking-[.2em]"><button onClick={() => setSearch(!search)} aria-label="Search"><Search size={17}/></button><Link className="hidden md:block" href="/account">Sign up / Log in</Link><Link href="/cart" className="flex items-center gap-2">Cart <span>({cart.length})</span></Link></div>
     </header>
     {menu && <div className="fixed inset-0 z-20 flex flex-col justify-end bg-ink p-6 pb-12 text-white md:hidden"><button onClick={() => setMenu(false)} className="absolute right-6 top-6"><X/></button>{[['About','/about'],['Shop','/shop'],['Home','/'],['News','/journal'],['Account','/account']].map(([x,href]) => <Link key={x} href={href} onClick={() => setMenu(false)} className="border-b border-white/20 py-4 text-4xl tracking-tight">{x}</Link>)}</div>}
