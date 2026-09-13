@@ -15,7 +15,7 @@ export default function Home() {
   const [menu, setMenu] = useState(false); const [cart, setCart] = useState<Product[]>([]); const [search, setSearch] = useState(false)
   const add = (p: Product) => setCart([...cart, p])
   return <main>
-    <header className="fixed top-0 z-30 flex w-full items-center justify-between px-5 py-5 mix-blend-difference text-white md:px-10">
+    <header className="fixed top-0 z-30 flex w-full items-center justify-between bg-ink px-5 py-5 text-white md:px-10">
       <div className="flex items-center gap-8 text-[10px] uppercase tracking-[.24em]"><button className="md:hidden" onClick={() => setMenu(!menu)}><Menu size={18}/></button><nav className="hidden gap-7 md:flex"><Link href="/about">About</Link><Link href="/shop">Shop</Link><Link href="/">Home</Link><Link href="/journal">Journal</Link></nav></div>
       <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold tracking-[-.08em]">KESHEV</Link>
       <div className="flex items-center gap-5 text-[10px] uppercase tracking-[.2em]"><button onClick={() => setSearch(!search)} aria-label="Search"><Search size={17}/></button><Link className="hidden md:block" href="/account">Sign up / Log in</Link><Link href="/cart" className="flex items-center gap-2">Cart <span>({cart.length})</span></Link></div>
