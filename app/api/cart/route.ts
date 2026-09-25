@@ -32,7 +32,7 @@ async function authenticatedUser(request: NextRequest): Promise<AuthUser | null>
   const authorization = request.headers.get('authorization')
   if (!authorization?.startsWith('Bearer ')) return null
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
   if (!url || !key) return null
   const response = await fetch(`${url}/auth/v1/user`, {
     headers: { apikey: key, Authorization: authorization },

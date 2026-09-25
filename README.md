@@ -82,4 +82,4 @@ Checkout sends only variant IDs and quantities as purchasing authority. The serv
 
 The CI workflow builds pull requests and `main` with Node.js 20. Production should deploy to Vercel without `output: 'export'` so all route handlers remain available.
 
-Future Supabase and Razorpay secrets must be configured only in the deployment environment. Razorpay secret keys and Supabase service-role credentials must never use a `NEXT_PUBLIC_` variable or be exposed to client-side code.
+Supabase and Razorpay secrets must be configured only in the deployment environment. `SUPABASE_SECRET_KEY`, `RAZORPAY_KEY_SECRET`, and `RAZORPAY_WEBHOOK_SECRET` must never use a `NEXT_PUBLIC_` variable or be exposed to client-side code.

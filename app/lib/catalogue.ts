@@ -63,16 +63,16 @@ const mapProduct = (row: DbProduct): Product => {
   }
 }
 
-export const isSupabaseConfigured = () => Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY))
+export const isSupabaseConfigured = () => Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SECRET_KEY)
 
 export async function getCatalogue(): Promise<Product[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const key = process.env.SUPABASE_SECRET_KEY
   if (!url || !key) return fallbackProducts
   try {
     const select = 'id,slug,name,description,is_new,is_bestseller,categories(slug,name),product_variants(id,sku,colour,size,price_paise,inventory(stock_quantity,low_stock_threshold)),product_images(image_url,sort_order)'
     const response = await fetch(`${url}/rest/v1/products?select=${encodeURIComponent(select)}&status=eq.active`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store'
+      headers: { apikey: key }, cache: 'no-store'
     })
     if (!response.ok) throw new Error(`Catalogue request failed: ${response.status}`)
     const rows = await response.json() as DbProduct[]
