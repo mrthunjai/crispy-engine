@@ -12,7 +12,7 @@ import OrderSummary from '../components/checkout/OrderSummary'
 import { useCart } from '../context/CartContext'
 import { Address } from '../lib/types'
 import { loadRazorpayScript } from '../lib/loadRazorpay'
-import { money } from '../lib/data'
+import { moneyRupees as money } from '../lib/data'
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -43,6 +43,7 @@ export default function CheckoutPage() {
     orderId: string
     localOrderId: string
     amount: number
+    orderAccessToken?: string
   } | null>(null)
 
   const validateAddress = (addr: Address): boolean => {
@@ -97,11 +98,11 @@ export default function CheckoutPage() {
         throw new Error(data.error || 'Failed to initialize order on server')
       }
 
-      const { orderId, localOrderId, amount, currency, keyId, isSimulated } = data
+      const { orderId, localOrderId, orderAccessToken, amount, currency, keyId, isSimulated } = data
 
       // 2. If running with test simulation mode (no live Razorpay keys configured yet)
       if (isSimulated) {
-        setSimulatedModal({ orderId, localOrderId, amount })
+        setSimulatedModal({ orderId, localOrderId, amount, orderAccessToken })
         setIsProcessing(false)
         return
       }
@@ -153,7 +154,8 @@ export default function CheckoutPage() {
 
             // 6. Clear cart and redirect
             clearCart()
-            router.push(`/order-confirmation?orderId=${verifyData.orderId}`)
+            const tokenQuery = orderAccessToken ? `&token=${encodeURIComponent(orderAccessToken)}` : ''
+            router.push(`/order-confirmation?orderId=${verifyData.orderId}${tokenQuery}`)
           } catch (verifyErr: any) {
             setCheckoutError(verifyErr.message || 'Payment verification failed.')
             setIsProcessing(false)
@@ -204,7 +206,8 @@ export default function CheckoutPage() {
 
       setSimulatedModal(null)
       clearCart()
-      router.push(`/order-confirmation?orderId=${verifyData.orderId}`)
+      const tokenQuery = simulatedModal.orderAccessToken ? `&token=${encodeURIComponent(simulatedModal.orderAccessToken)}` : ''
+      router.push(`/order-confirmation?orderId=${verifyData.orderId}${tokenQuery}`)
     } catch (err: any) {
       setCheckoutError(err.message)
       setIsProcessing(false)

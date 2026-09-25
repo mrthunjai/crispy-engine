@@ -11,7 +11,9 @@ export type Product = {
   id: string
   slug: string
   name: string
-  category: 'Tops' | 'Bottoms'
+  category: string
+  categorySlug: string
+  collection: 'Tops' | 'Bottoms'
   type: string
   description: string
   pricePaise: number
@@ -22,7 +24,7 @@ export type Product = {
   variants: ProductVariant[]
 }
 
-type ProductSeed = Omit<Product, 'id' | 'variants'>
+type ProductSeed = Omit<Product, 'id' | 'variants' | 'categorySlug' | 'collection'>
 
 const seeds: ProductSeed[] = [
   { slug:'everyday-tee', name:'The Everyday Tee', category:'Tops', type:'Heavyweight cotton / Ink', description:'A substantial everyday tee with a relaxed line and a soft, lived-in hand.', pricePaise:249000, image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1000&q=85', tag:'New', colors:['Ink','Bone'], sizes:['XS','S','M','L','XL'] },
@@ -38,6 +40,8 @@ const skuPart = (value: string) => value.toUpperCase().replace(/[^A-Z0-9]+/g, '-
 export const products: Product[] = seeds.map((product) => ({
   ...product,
   id: product.slug,
+  categorySlug: product.category.toLowerCase(),
+  collection: product.category === 'Tops' ? 'Tops' : 'Bottoms',
   variants: product.colors.flatMap((colour) => product.sizes.map((size, index) => ({
     id: `${product.slug}-${colour.toLowerCase()}-${size.toLowerCase()}`,
     sku: `KES-${skuPart(product.slug)}-${skuPart(colour)}-${skuPart(size)}`,
@@ -51,6 +55,10 @@ export const products: Product[] = seeds.map((product) => ({
 export const money = (paise:number) => new Intl.NumberFormat('en-IN', {
   style: 'currency', currency: 'INR', maximumFractionDigits: 0
 }).format(paise / 100)
+
+export const moneyRupees = (rupees:number) => new Intl.NumberFormat('en-IN', {
+  style: 'currency', currency: 'INR', maximumFractionDigits: 0
+}).format(rupees)
 
 export const findProduct = (slug: string) => products.find((product) => product.slug === slug)
 

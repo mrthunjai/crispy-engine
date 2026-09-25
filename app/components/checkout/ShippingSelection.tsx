@@ -4,7 +4,7 @@ import React from 'react'
 import { Check, Truck, Zap } from 'lucide-react'
 import { ShippingMethod } from '../../lib/types'
 import { SHIPPING_METHODS, FREE_SHIPPING_THRESHOLD } from '../../lib/shipping'
-import { money } from '../../lib/data'
+import { moneyRupees as money } from '../../lib/data'
 
 interface ShippingSelectionProps {
   subtotal: number

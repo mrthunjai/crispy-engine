@@ -172,11 +172,11 @@ Enforce at most one default address per customer.
 - `id`
 - `user_id`, nullable
 - `guest_token_hash`, nullable
-- `status`: `active`, `merged`, `converted`, `abandoned`
+- `status`: `active`, `merged`, `checked_out`, `abandoned`
 - `expires_at`
 - `created_at`, `updated_at`
 
-A cart has exactly one owner type: authenticated user or guest token. Allow at most one active cart per customer.
+A cart has exactly one owner type: authenticated user or guest token. Allow at most one active cart per customer. Guest carts persist only in the browser that owns their HTTP-only token; authenticated carts are keyed by `auth.users.id` and are therefore available across devices. On login, merge the browser guest cart into the authenticated cart once and mark the guest cart `merged`.
 
 #### `cart_items`
 

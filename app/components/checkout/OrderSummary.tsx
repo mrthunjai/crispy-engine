@@ -3,7 +3,7 @@
 import React from 'react'
 import { Lock, ShieldCheck } from 'lucide-react'
 import { CartItem } from '../../lib/types'
-import { money } from '../../lib/data'
+import { moneyRupees as money } from '../../lib/data'
 import FreeShippingBar from '../FreeShippingBar'
 import DiscountCodeInput from './DiscountCodeInput'
 
