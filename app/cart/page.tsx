@@ -8,7 +8,7 @@ import Footer from '../components/Footer'
 import FreeShippingBar from '../components/FreeShippingBar'
 import DiscountCodeInput from '../components/checkout/DiscountCodeInput'
 import { useCart } from '../context/CartContext'
-import { money } from '../lib/data'
+import { moneyRupees as money } from '../lib/data'
 
 export default function Cart() {
   const {

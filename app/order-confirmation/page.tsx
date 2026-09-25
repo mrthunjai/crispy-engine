@@ -7,18 +7,20 @@ import { Check, ArrowRight, Package, MapPin, CreditCard, Loader2 } from 'lucide-
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { Order } from '../lib/types'
-import { money } from '../lib/data'
+import { moneyRupees as money } from '../lib/data'
 
 function ConfirmationContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get('orderId') || 'KSV-24001'
+  const accessToken = searchParams.get('token')
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchOrder() {
       try {
-        const res = await fetch(`/api/orders/${orderId}`)
+        const query = accessToken ? `?token=${encodeURIComponent(accessToken)}` : ''
+        const res = await fetch(`/api/orders/${orderId}${query}`)
         if (res.ok) {
           const data = await res.json()
           setOrder(data.order)
@@ -35,7 +37,7 @@ function ConfirmationContent() {
     } else {
       setLoading(false)
     }
-  }, [orderId])
+  }, [accessToken, orderId])
 
   return (
     <main className="mx-auto max-w-4xl px-5 pb-24 pt-36 md:px-10">

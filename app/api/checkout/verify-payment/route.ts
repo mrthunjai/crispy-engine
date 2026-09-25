@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { getOrderByRazorpayOrderId, markOrderAsPaid } from '../../../lib/orders'
 import { decrementStockForItems } from '../../../lib/inventory'
+import { hasSupabaseServerConfig, supabaseRest } from '../../../lib/supabase-rest'
+
+type PaymentAttempt = { id: string; order_id: string; expected_amount_paise: number; currency: string }
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,11 +24,13 @@ export async function POST(req: NextRequest) {
     }
 
     const secret = process.env.RAZORPAY_KEY_SECRET
-    const isSimMode =
-      isSimulated ||
-      razorpay_order_id.startsWith('order_sim_') ||
-      !secret ||
-      secret.includes('YourKeySecret')
+    const isSimMode = process.env.NODE_ENV !== 'production' && (
+      isSimulated || razorpay_order_id.startsWith('order_sim_') || !secret || secret.includes('YourKeySecret')
+    )
+
+    if (!isSimMode && !secret) {
+      return NextResponse.json({ error: 'Payment verification is not configured.' }, { status: 503 })
+    }
 
     if (!isSimMode) {
       // 1. Verify HMAC SHA-256 signature
@@ -43,7 +48,28 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Fetch order from store
+    if (hasSupabaseServerConfig()) {
+      const attempts = await supabaseRest<PaymentAttempt[]>(`payment_attempts?select=id,order_id,expected_amount_paise,currency&razorpay_order_id=eq.${encodeURIComponent(razorpay_order_id)}&limit=1`)
+      const attempt = attempts[0]
+      if (!attempt) return NextResponse.json({ error: 'Payment attempt not found.' }, { status: 404 })
+      await supabaseRest('rpc/finalize_captured_payment', {
+        method: 'POST',
+        body: JSON.stringify({
+          p_payment_attempt_id: attempt.id,
+          p_razorpay_payment_id: razorpay_payment_id,
+          p_captured_amount_paise: attempt.expected_amount_paise,
+          p_currency: attempt.currency,
+        }),
+      })
+      return NextResponse.json({
+        success: true,
+        orderId: attempt.order_id,
+        paymentId: razorpay_payment_id,
+        message: 'Payment verified and inventory finalized.',
+      })
+    }
+
+    // 2. Local-development fallback when Supabase is not configured.
     const order = getOrderByRazorpayOrderId(razorpay_order_id)
     if (!order) {
       return NextResponse.json(

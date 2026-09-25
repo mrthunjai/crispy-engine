@@ -17,11 +17,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .site-kicker { font-size: 10px; text-transform: uppercase; letter-spacing: .25em; }
 .site-title { margin-top: 1.25rem; font-size: clamp(4.5rem, 11vw, 10rem); line-height: .84; letter-spacing: -.08em; }
 .intro-overlay { position: fixed; inset: 0 auto auto 0; width: 100%; height: 100vh; z-index: 60; display: flex; align-items: center; justify-content: center; background: #f3f1eb; animation: intro-screen 2.6s cubic-bezier(.76,0,.24,1) forwards; }
-.intro-logo { color: #111; font-size: clamp(3rem, 8vw, 8rem); font-weight: 700; line-height: 1; letter-spacing: -.08em; animation: intro-logo-size 2.6s cubic-bezier(.76,0,.24,1) forwards; }
-.intro-logo span { display: inline-block; opacity: 0; animation: intro-letter .65s cubic-bezier(.22,1,.36,1) forwards; }
+.intro-mark { position: absolute; width: clamp(9rem, 24vw, 22rem); object-fit: contain; animation: intro-mark-size 2.6s cubic-bezier(.76,0,.24,1) forwards; }
+.intro-mark-dark { opacity: 1; animation-name: intro-mark-size, intro-mark-dark; }
+.intro-mark-light { opacity: 0; animation-name: intro-mark-size, intro-mark-light; }
 .image-break { min-height: 62vh; background-position: center; background-size: cover; background-attachment: fixed; }
 @keyframes intro-screen { 0%, 35% { height: 100vh; background: #f3f1eb; opacity: 1; } 52% { height: 100vh; background: #111; opacity: 1; } 84% { height: 64px; background: #111; opacity: 1; } 100% { height: 64px; background: #111; opacity: 0; visibility: hidden; } }
-@keyframes intro-letter { 0% { opacity: 0; transform: translateY(24px); } 100% { opacity: 1; transform: translateY(0); } }
-@keyframes intro-logo-size { 0%, 40% { color: #111; font-size: clamp(3rem, 8vw, 8rem); } 52% { color: #fff; font-size: 20px; } 84%, 100% { color: #fff; font-size: 20px; } }
-@media (prefers-reduced-motion: reduce) { .intro-overlay, .intro-logo { animation-duration: .01ms; animation-delay: 0ms; } }
+@keyframes intro-mark-size { 0%, 40% { width: clamp(9rem, 24vw, 22rem); } 58%, 100% { width: 3.5rem; } }
+@keyframes intro-mark-dark { 0%, 40% { opacity: 1; } 52%, 100% { opacity: 0; } }
+@keyframes intro-mark-light { 0%, 40% { opacity: 0; } 52%, 88% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .intro-overlay, .intro-mark { animation-duration: .01ms; animation-delay: 0ms; } }
 @media (min-width: 768px) { .site-main { padding-left: 2.5rem; padding-right: 2.5rem; } }
