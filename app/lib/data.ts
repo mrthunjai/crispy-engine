@@ -13,7 +13,7 @@ export type Product = {
   name: string
   category: string
   categorySlug: string
-  collection: 'Tops' | 'Bottoms'
+  collection: string
   type: string
   description: string
   pricePaise: number
@@ -26,13 +26,21 @@ export type Product = {
 
 type ProductSeed = Omit<Product, 'id' | 'variants' | 'categorySlug' | 'collection'>
 
+const sizes = ['S', 'M', 'L', 'XL']
+
 const seeds: ProductSeed[] = [
-  { slug:'everyday-tee', name:'The Everyday Tee', category:'Tops', type:'Heavyweight cotton / Ink', description:'A substantial everyday tee with a relaxed line and a soft, lived-in hand.', pricePaise:249000, image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1000&q=85', tag:'New', colors:['Ink','Bone'], sizes:['XS','S','M','L','XL'] },
-  { slug:'relaxed-overshirt', name:'Relaxed Overshirt', category:'Tops', type:'Organic twill / Bone', description:'An easy layer cut with room to move, finished in weighty organic twill.', pricePaise:499000, image:'https://images.unsplash.com/photo-1598808503746-f34c53b9323e?auto=format&fit=crop&w=1000&q=85', colors:['Bone','Olive'], sizes:['S','M','L','XL'] },
-  { slug:'studio-trouser', name:'Studio Trouser', category:'Bottoms', type:'Cotton linen / Stone', description:'A clean, straight trouser made from breathable cotton linen for everyday wear.', pricePaise:449000, image:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=1000&q=85', tag:'Bestseller', colors:['Stone','Ink'], sizes:['28','30','32','34','36'] },
-  { slug:'daily-short', name:'Daily Short', category:'Bottoms', type:'Cotton poplin / Ink', description:'Lightweight pull-on shorts designed for warm days and unhurried weekends.', pricePaise:299000, image:'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=1000&q=85', colors:['Ink','Sand'], sizes:['28','30','32','34','36'] },
-  { slug:'boxy-shirt', name:'Boxy Shirt', category:'Tops', type:'Washed cotton / White', description:'A softly structured shirt with a cropped, boxy proportion and washed finish.', pricePaise:349000, image:'https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=1000&q=85', colors:['White','Blue'], sizes:['S','M','L','XL'] },
-  { slug:'utility-pant', name:'Utility Pant', category:'Bottoms', type:'Cotton canvas / Olive', description:'A practical canvas trouser with generous pockets and a relaxed tapered shape.', pricePaise:529000, image:'https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=1000&q=85', tag:'Low stock', colors:['Olive','Ink'], sizes:['28','30','32','34'] }
+  { slug: 'shirt-design-01', name: 'Shirt Design 01', category: 'Shirt', type: 'Shirt / Black', description: 'A considered everyday shirt designed for a clean, comfortable fit.', pricePaise: 249000, image: 'https://placehold.co/1200x1500?text=Shirt+Design+01', tag: 'New', colors: ['Black', 'White', 'Navy'], sizes },
+  { slug: 'shirt-design-02', name: 'Shirt Design 02', category: 'Shirt', type: 'Shirt / Black', description: 'A considered everyday shirt designed for a clean, comfortable fit.', pricePaise: 249000, image: 'https://placehold.co/1200x1500?text=Shirt+Design+02', colors: ['Black', 'White', 'Navy'], sizes },
+  { slug: 'shirt-design-03', name: 'Shirt Design 03', category: 'Shirt', type: 'Shirt / Black', description: 'A considered everyday shirt designed for a clean, comfortable fit.', pricePaise: 249000, image: 'https://placehold.co/1200x1500?text=Shirt+Design+03', colors: ['Black', 'White', 'Navy'], sizes },
+  { slug: 'shirt-design-04', name: 'Shirt Design 04', category: 'Shirt', type: 'Shirt / Black', description: 'A considered everyday shirt designed for a clean, comfortable fit.', pricePaise: 249000, image: 'https://placehold.co/1200x1500?text=Shirt+Design+04', tag: 'Bestseller', colors: ['Black', 'White', 'Navy'], sizes },
+  { slug: 'joggers-design-01', name: 'Joggers Design 01', category: 'Joggers', type: 'Joggers / Black', description: 'Relaxed joggers made for movement and everyday wear.', pricePaise: 349000, image: 'https://placehold.co/1200x1500?text=Joggers+Design+01', tag: 'New', colors: ['Black', 'Grey', 'Olive'], sizes },
+  { slug: 'joggers-design-02', name: 'Joggers Design 02', category: 'Joggers', type: 'Joggers / Black', description: 'Relaxed joggers made for movement and everyday wear.', pricePaise: 349000, image: 'https://placehold.co/1200x1500?text=Joggers+Design+02', colors: ['Black', 'Grey', 'Olive'], sizes },
+  { slug: 'joggers-design-03', name: 'Joggers Design 03', category: 'Joggers', type: 'Joggers / Black', description: 'Relaxed joggers made for movement and everyday wear.', pricePaise: 349000, image: 'https://placehold.co/1200x1500?text=Joggers+Design+03', colors: ['Black', 'Grey', 'Olive'], sizes },
+  { slug: 'joggers-design-04', name: 'Joggers Design 04', category: 'Joggers', type: 'Joggers / Black', description: 'Relaxed joggers made for movement and everyday wear.', pricePaise: 349000, image: 'https://placehold.co/1200x1500?text=Joggers+Design+04', tag: 'Bestseller', colors: ['Black', 'Grey', 'Olive'], sizes },
+  { slug: 'tracks-design-01', name: 'Tracks Design 01', category: 'Tracks', type: 'Tracks / Black', description: 'A versatile track layer with a streamlined everyday silhouette.', pricePaise: 399000, image: 'https://placehold.co/1200x1500?text=Tracks+Design+01', tag: 'New', colors: ['Black', 'Navy', 'Maroon'], sizes },
+  { slug: 'tracks-design-02', name: 'Tracks Design 02', category: 'Tracks', type: 'Tracks / Black', description: 'A versatile track layer with a streamlined everyday silhouette.', pricePaise: 399000, image: 'https://placehold.co/1200x1500?text=Tracks+Design+02', tag: 'Bestseller', colors: ['Black', 'Navy', 'Maroon'], sizes },
+  { slug: 'shorts-design-01', name: 'Shorts Design 01', category: 'Shorts', type: 'Shorts / Black', description: 'Lightweight shorts designed for comfortable everyday movement.', pricePaise: 199000, image: 'https://placehold.co/1200x1500?text=Shorts+Design+01', colors: ['Black', 'Grey', 'Navy'], sizes },
+  { slug: 'compression-shorts-design-01', name: 'Compression Shorts Design 01', category: 'Compression Shorts', type: 'Compression Shorts / Black', description: 'Supportive compression shorts for training and active days.', pricePaise: 169000, image: 'https://placehold.co/1200x1500?text=Compression+Shorts+Design+01', colors: ['Black', 'Grey'], sizes }
 ]
 
 const skuPart = (value: string) => value.toUpperCase().replace(/[^A-Z0-9]+/g, '-')
@@ -40,23 +48,23 @@ const skuPart = (value: string) => value.toUpperCase().replace(/[^A-Z0-9]+/g, '-
 export const products: Product[] = seeds.map((product) => ({
   ...product,
   id: product.slug,
-  categorySlug: product.category.toLowerCase(),
-  collection: product.category === 'Tops' ? 'Tops' : 'Bottoms',
-  variants: product.colors.flatMap((colour) => product.sizes.map((size, index) => ({
+  categorySlug: product.category.toLowerCase().replace(/\s+/g, '-'),
+  collection: product.category,
+  variants: product.colors.flatMap((colour) => product.sizes.map((size) => ({
     id: `${product.slug}-${colour.toLowerCase()}-${size.toLowerCase()}`,
     sku: `KES-${skuPart(product.slug)}-${skuPart(colour)}-${skuPart(size)}`,
     colour,
     size,
     pricePaise: product.pricePaise,
-    stockQuantity: product.slug === 'utility-pant' ? Math.max(1, 4 - index) : 12
+    stockQuantity: product.slug === 'compression-shorts-design-01' && colour === 'Black' && size === 'S' ? 4 : 24
   })))
 }))
 
-export const money = (paise:number) => new Intl.NumberFormat('en-IN', {
+export const money = (paise: number) => new Intl.NumberFormat('en-IN', {
   style: 'currency', currency: 'INR', maximumFractionDigits: 0
 }).format(paise / 100)
 
-export const moneyRupees = (rupees:number) => new Intl.NumberFormat('en-IN', {
+export const moneyRupees = (rupees: number) => new Intl.NumberFormat('en-IN', {
   style: 'currency', currency: 'INR', maximumFractionDigits: 0
 }).format(rupees)
 

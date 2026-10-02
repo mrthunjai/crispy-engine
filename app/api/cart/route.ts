@@ -2,47 +2,25 @@ import { createHash, randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import type { CartItem } from '../../components/StoreProvider'
 import { hasSupabaseServerConfig, supabaseRest } from '../../lib/supabase-rest'
+import type { Tables } from '../../lib/database.types'
+import { getAuthenticatedUser } from '../../lib/supabase/authorization'
 
 export const dynamic = 'force-dynamic'
 
 const COOKIE_NAME = 'store_guest_cart'
 const THIRTY_DAYS = 60 * 60 * 24 * 30
 
-type CartRow = { id: string }
-type AuthUser = { id: string }
-type CartItemRow = {
-  cart_id: string
-  product_id: string
-  variant_id: string
-  product_name_snapshot: string
-  image_url_snapshot: string | null
-  colour_snapshot: string
-  size_snapshot: string
-  price_paise_snapshot: number
-  quantity: number
-}
-type VariantRow = { id: string; product_id: string; colour: string; size: string; price_paise: number; is_discontinued: boolean; inventory: { stock_quantity: number } | { stock_quantity: number }[] | null }
-type ProductRow = { id: string; slug: string; name: string; status: string; product_images: { image_url: string; sort_order: number }[] }
+type CartRow = Pick<Tables<'carts'>, 'id'>
+type CartItemRow = Pick<Tables<'cart_items'>, 'cart_id' | 'product_id' | 'variant_id' | 'product_name_snapshot' | 'image_url_snapshot' | 'colour_snapshot' | 'size_snapshot' | 'price_paise_snapshot' | 'quantity'>
+type VariantRow = Pick<Tables<'product_variants'>, 'id' | 'product_id' | 'colour' | 'size' | 'price_paise' | 'is_discontinued'> & { inventory: { stock_quantity: number } | { stock_quantity: number }[] | null }
+type ProductRow = Pick<Tables<'products'>, 'id' | 'slug' | 'name' | 'status'> & { product_images: Pick<Tables<'product_images'>, 'image_url' | 'sort_order'>[] }
 
 const first = <T,>(value: T | T[] | null): T | null => value ? (Array.isArray(value) ? value[0] ?? null : value) : null
 const hashToken = (token: string) => createHash('sha256').update(token).digest('hex')
 const inFilter = (ids: string[]) => `in.(${ids.join(',')})`
 
-async function authenticatedUser(request: NextRequest): Promise<AuthUser | null> {
-  const authorization = request.headers.get('authorization')
-  if (!authorization?.startsWith('Bearer ')) return null
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  if (!url || !key) return null
-  const response = await fetch(`${url}/auth/v1/user`, {
-    headers: { apikey: key, Authorization: authorization },
-    cache: 'no-store',
-  })
-  return response.ok ? response.json() as Promise<AuthUser> : null
-}
-
 async function getCart(request: NextRequest) {
-  const user = await authenticatedUser(request)
+  const user = await getAuthenticatedUser()
   let token = request.cookies.get(COOKIE_NAME)?.value
   let setCookie = false
   if (!token) { token = randomBytes(32).toString('base64url'); setCookie = true }

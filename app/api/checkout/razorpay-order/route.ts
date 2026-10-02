@@ -7,8 +7,9 @@ import { validateAndApplyDiscount } from '../../../lib/discounts'
 import { createPendingOrder } from '../../../lib/orders'
 import { getRazorpayClient } from '../../../lib/razorpay'
 import { hasSupabaseServerConfig, supabaseRest } from '../../../lib/supabase-rest'
+import type { Tables } from '../../../lib/database.types'
 
-type DbOrder = { id: string; order_number: string }
+type DbOrder = Pick<Tables<'orders'>, 'id' | 'order_number'>
 
 export async function POST(req: NextRequest) {
   try {

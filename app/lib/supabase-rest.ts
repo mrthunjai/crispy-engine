@@ -1,3 +1,5 @@
+import 'server-only'
+
 type RestOptions = RequestInit & { prefer?: string }
 
 export const hasSupabaseServerConfig = () => Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SECRET_KEY)
