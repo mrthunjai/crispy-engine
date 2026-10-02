@@ -1,30 +1,19 @@
 import { products as fallbackProducts, type Product } from './data'
+import type { Tables } from './database.types'
 
-type DbCategory = { slug: string; name: string }
-type DbInventory = { stock_quantity: number; low_stock_threshold: number }
-type DbVariant = {
-  id: string
-  sku: string
-  colour: string
-  size: string
-  price_paise: number
+type DbCategory = Pick<Tables<'categories'>, 'slug' | 'name'>
+type DbInventory = Pick<Tables<'inventory'>, 'stock_quantity' | 'low_stock_threshold'>
+type DbVariant = Pick<Tables<'product_variants'>, 'id' | 'sku' | 'colour' | 'size' | 'price_paise'> & {
   inventory: DbInventory | DbInventory[] | null
 }
-type DbImage = { image_url: string; sort_order: number }
-type DbProduct = {
-  id: string
-  slug: string
-  name: string
-  description: string | null
-  is_new: boolean
-  is_bestseller: boolean
+type DbImage = Pick<Tables<'product_images'>, 'image_url' | 'sort_order'>
+type DbProduct = Pick<Tables<'products'>, 'id' | 'slug' | 'name' | 'description' | 'is_new' | 'is_bestseller'> & {
   categories: DbCategory | DbCategory[]
   product_variants: DbVariant[]
   product_images: DbImage[]
 }
 
 const relation = <T,>(value: T | T[]): T => Array.isArray(value) ? value[0] : value
-const collectionFor = (slug: string): 'Tops' | 'Bottoms' => slug === 'shirt' ? 'Tops' : 'Bottoms'
 
 const mapProduct = (row: DbProduct): Product => {
   const category = relation(row.categories)
@@ -51,7 +40,7 @@ const mapProduct = (row: DbProduct): Product => {
     name: row.name,
     category: category.name,
     categorySlug: category.slug,
-    collection: collectionFor(category.slug),
+    collection: category.name,
     type: `${category.name}${firstVariant ? ` / ${firstVariant.colour}` : ''}`,
     description: row.description || 'A considered everyday piece, designed to move with you.',
     pricePaise: variants.length ? Math.min(...variants.map((variant)=>variant.pricePaise)) : 0,

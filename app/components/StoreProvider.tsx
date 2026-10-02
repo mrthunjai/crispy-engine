@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { Product, ProductVariant } from '../lib/data'
+import { createClient as createSupabaseClient } from '../lib/supabase/client'
 
 export type CartItem = {
   productId: string
@@ -20,6 +21,7 @@ type StoreContextValue = {
   products: Product[]
   cart: CartItem[]
   cartCount: number
+  cartReady: boolean
   subtotalPaise: number
   wishlist: string[]
   addToCart: (product: Product, variant: ProductVariant, quantity?: number) => void
@@ -39,31 +41,46 @@ const readStored = <T,>(key: string, fallback: T): T => {
   catch { return fallback }
 }
 
-const authHeaders = (): Record<string, string> => {
-  try {
-    const key = Object.keys(window.localStorage).find((candidate) => candidate.startsWith('sb-') && candidate.endsWith('-auth-token'))
-    if (!key) return {}
-    const session = JSON.parse(window.localStorage.getItem(key) || '{}')
-    const accessToken = session?.access_token || session?.currentSession?.access_token
-    return accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
-  } catch { return {} }
+const authHeaders = async (): Promise<Record<string, string>> => {
+  const supabase = createSupabaseClient()
+  if (!supabase) return {}
+  const { data } = await supabase.auth.getSession()
+  return data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {}
 }
 
 export function StoreProvider({ children, initialProducts }: { children: React.ReactNode; initialProducts: Product[] }) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [wishlist, setWishlist] = useState<string[]>([])
   const [ready, setReady] = useState(false)
+  const [cartReady, setCartReady] = useState(false)
   const [databaseCart, setDatabaseCart] = useState(false)
 
   useEffect(() => {
-    setCart(readStored(CART_KEY, []))
     setWishlist(readStored(WISHLIST_KEY, []))
-    fetch('/api/cart', { headers: authHeaders() }).then(async (response) => {
-      if (!response.ok) return
-      const body = await response.json() as { items: CartItem[] }
-      setCart(body.items)
-      setDatabaseCart(true)
-    }).catch(()=>undefined).finally(()=>setReady(true))
+    const loadCart = async () => {
+      setCartReady(false)
+      try {
+        const response = await fetch('/api/cart', { headers: await authHeaders() })
+        if (response.ok) {
+          const body = await response.json() as { items: CartItem[] }
+          setCart(body.items)
+          setDatabaseCart(true)
+          window.localStorage.removeItem(CART_KEY)
+        } else {
+          setCart(readStored(CART_KEY, []))
+          setDatabaseCart(false)
+        }
+      } catch {
+        setCart(readStored(CART_KEY, []))
+        setDatabaseCart(false)
+      } finally {
+        setCartReady(true)
+      }
+    }
+    void loadCart().finally(()=>setReady(true))
+    const supabase = createSupabaseClient()
+    const subscription = supabase?.auth.onAuthStateChange(() => { void loadCart() }).data.subscription
+    return () => subscription?.unsubscribe()
   }, [])
   useEffect(() => { if (ready && !databaseCart) window.localStorage.setItem(CART_KEY, JSON.stringify(cart)) }, [cart, databaseCart, ready])
   useEffect(() => { if (ready) window.localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist)) }, [wishlist, ready])
@@ -71,7 +88,7 @@ export function StoreProvider({ children, initialProducts }: { children: React.R
   const syncCart = useCallback(async (method: 'POST'|'PATCH'|'DELETE', body: Record<string, unknown>) => {
     if (!databaseCart) return
     try {
-      const response = await fetch('/api/cart', { method, headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(body) })
+      const response = await fetch('/api/cart', { method, headers: { 'Content-Type': 'application/json', ...await authHeaders() }, body: JSON.stringify(body) })
       if (!response.ok) return
       const payload = await response.json() as { items: CartItem[] }
       setCart(payload.items)
@@ -101,7 +118,7 @@ export function StoreProvider({ children, initialProducts }: { children: React.R
   }, [syncCart])
   const toggleWishlist = useCallback((productId: string) => setWishlist((current) => current.includes(productId) ? current.filter((id) => id !== productId) : [...current, productId]), [])
 
-  const value = useMemo(() => ({ products: initialProducts, cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0), subtotalPaise: cart.reduce((total, item) => total + item.pricePaise * item.quantity, 0), wishlist, addToCart, setQuantity, removeFromCart, clearCart, toggleWishlist, isWishlisted: (productId: string) => wishlist.includes(productId) }), [addToCart, cart, clearCart, initialProducts, removeFromCart, setQuantity, toggleWishlist, wishlist])
+  const value = useMemo(() => ({ products: initialProducts, cart, cartCount: cart.reduce((total, item) => total + item.quantity, 0), cartReady, subtotalPaise: cart.reduce((total, item) => total + item.pricePaise * item.quantity, 0), wishlist, addToCart, setQuantity, removeFromCart, clearCart, toggleWishlist, isWishlisted: (productId: string) => wishlist.includes(productId) }), [addToCart, cart, cartReady, clearCart, initialProducts, removeFromCart, setQuantity, toggleWishlist, wishlist])
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }
 

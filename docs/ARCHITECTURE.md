@@ -33,7 +33,7 @@ GitHub Pages cannot execute Next.js route handlers, authentication middleware, s
 
 ## Catalogue decisions
 
-- Tops and Bottoms are the initial categories.
+- Shirt, Joggers, Tracks, Shorts, and Compression Shorts are the initial categories.
 - New arrivals use an explicit merchandising flag.
 - Sale products are derived from variants whose compare-at price exceeds their selling price.
 - Bestseller is a manually managed merchandising flag in V1.
@@ -42,7 +42,7 @@ GitHub Pages cannot execute Next.js route handlers, authentication middleware, s
 - Wishlist entries reference products. A variant is selected when moving an item to the cart.
 - Available, low-stock and out-of-stock states are derived from inventory.
 - Discontinued is an explicit variant state.
-- The six initial products produce 54 size and colour variants.
+- The 12 initial products produce 140 size and colour variants.
 
 All money values use integer paise. For example, ₹2,490 is stored as `249000`.
 
@@ -418,7 +418,7 @@ Payment and fulfilment remain separate. Authorized payment alone does not confir
 ### Person 1 — Database, authentication and platform
 
 - Supabase projects, migrations, constraints, indexes and RLS
-- Seed data for all six products and 54 variants
+- Seed data for all 12 products and 140 variants
 - Authentication, profiles, addresses and protected account routes
 - Admin role assignment
 - Transactional functions for cart merging, reservations, payment finalization and stock adjustment
@@ -454,7 +454,7 @@ Person 3 supplies quote and validation-error contracts to Person 2 and deploymen
 
 ## Acceptance criteria
 
-- All six products and 54 variants are represented without exceptions.
+- All 12 products and 140 variants are represented without exceptions.
 - Cart state works across pages, reloads, login and devices.
 - Unavailable variants cannot be purchased.
 - Server totals match displayed and charged totals.

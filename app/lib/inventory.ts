@@ -1,15 +1,17 @@
 import { CartItem, InventoryItem } from './types'
 import { products } from './data'
 
-// Initial stock mapped from products
-const INITIAL_INVENTORY: Record<string, InventoryItem> = {
-  'everyday-tee': { slug: 'everyday-tee', name: 'The Everyday Tee', price: 2490, category: 'Tops', stock: 24, lowStockThreshold: 5 },
-  'relaxed-overshirt': { slug: 'relaxed-overshirt', name: 'Relaxed Overshirt', price: 4990, category: 'Tops', stock: 18, lowStockThreshold: 5 },
-  'studio-trouser': { slug: 'studio-trouser', name: 'Studio Trouser', price: 4490, category: 'Bottoms', stock: 12, lowStockThreshold: 5 },
-  'daily-short': { slug: 'daily-short', name: 'Daily Short', price: 2990, category: 'Bottoms', stock: 20, lowStockThreshold: 5 },
-  'boxy-shirt': { slug: 'boxy-shirt', name: 'Boxy Shirt', price: 3490, category: 'Tops', stock: 15, lowStockThreshold: 5 },
-  'utility-pant': { slug: 'utility-pant', name: 'Utility Pant', price: 5290, category: 'Bottoms', stock: 4, lowStockThreshold: 5 },
-}
+// Initial stock mapped from the current fallback catalogue.
+const INITIAL_INVENTORY: Record<string, InventoryItem> = Object.fromEntries(
+  products.map((product) => [product.slug, {
+    slug: product.slug,
+    name: product.name,
+    price: product.pricePaise / 100,
+    category: product.category,
+    stock: product.variants.reduce((total, variant) => total + variant.stockQuantity, 0),
+    lowStockThreshold: 5,
+  }])
+)
 
 // Global variable across hot-reloads in Node runtime
 const globalForInventory = globalThis as unknown as {

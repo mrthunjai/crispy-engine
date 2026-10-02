@@ -14,6 +14,7 @@ export default function Cart() {
   const {
     items,
     count,
+    cartReady,
     subtotal,
     shippingFee,
     discountCode,
@@ -29,6 +30,19 @@ export default function Cart() {
     applyDiscount,
     removeDiscount,
   } = useCart()
+
+  if (!cartReady) {
+    return (
+      <>
+        <Header />
+        <main className="mx-auto flex min-h-[70vh] max-w-4xl flex-col items-center justify-center px-5 pt-36 text-center">
+          <div className="h-16 w-16 animate-pulse rounded-full bg-black/10" />
+          <p className="mt-6 text-sm text-black/50">Loading your cart…</p>
+        </main>
+        <Footer />
+      </>
+    )
+  }
 
   if (items.length === 0) {
     return (

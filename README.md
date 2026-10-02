@@ -5,8 +5,8 @@ A Next.js storefront for a contemporary clothing label. It combines the customer
 ## Current experience
 
 - Animated logo introduction that transitions into the fixed navigation bar
-- Responsive homepage with hero, Tops and Bottoms collections, editorial imagery, support links and socials
-- Supabase-backed products, images, variants and variant-level inventory, with a six-product local fallback
+- Responsive homepage with hero, product collections, editorial imagery, support links and socials
+- Supabase-backed products, images, variants and variant-level inventory, with a 12-product local fallback
 - Product search, category filters, size and colour filters, and sorting
 - Product detail pages with variant selection and stock feedback
 - Quick view and quick add with explicit size and colour selection

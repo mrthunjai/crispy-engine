@@ -2,30 +2,12 @@ import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderById } from '../../../lib/orders'
 import { hasSupabaseServerConfig, supabaseRest } from '../../../lib/supabase-rest'
+import type { Tables } from '../../../lib/database.types'
 
-type DbOrderItem = {
-  id: string
-  product_id: string
-  variant_id: string
-  product_name_snapshot: string
-  colour_snapshot: string
-  size_snapshot: string
-  image_url_snapshot: string | null
-  quantity: number
-  unit_price_paise: number
-}
+type DbOrderItem = Pick<Tables<'order_items'>, 'id' | 'product_id' | 'variant_id' | 'product_name_snapshot' | 'colour_snapshot' | 'size_snapshot' | 'image_url_snapshot' | 'quantity' | 'unit_price_paise'>
 
-type DbOrder = {
-  id: string
-  shipping_address_snapshot: Record<string, string>
-  subtotal_paise: number
-  discount_paise: number
-  shipping_paise: number
-  total_paise: number
+type DbOrder = Omit<Pick<Tables<'orders'>, 'id' | 'shipping_address_snapshot' | 'subtotal_paise' | 'discount_paise' | 'shipping_paise' | 'total_paise' | 'discount_snapshot' | 'payment_status' | 'fulfilment_status' | 'created_at'>, 'discount_snapshot'> & {
   discount_snapshot: { code?: string } | null
-  payment_status: 'pending' | 'paid' | 'failed' | 'refunded' | 'partially_refunded'
-  fulfilment_status: string
-  created_at: string
   order_items: DbOrderItem[]
   payment_attempts: { razorpay_order_id: string; razorpay_payment_id: string | null }[]
 }

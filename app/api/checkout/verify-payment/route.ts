@@ -3,8 +3,9 @@ import crypto from 'crypto'
 import { getOrderByRazorpayOrderId, markOrderAsPaid } from '../../../lib/orders'
 import { decrementStockForItems } from '../../../lib/inventory'
 import { hasSupabaseServerConfig, supabaseRest } from '../../../lib/supabase-rest'
+import type { Tables } from '../../../lib/database.types'
 
-type PaymentAttempt = { id: string; order_id: string; expected_amount_paise: number; currency: string }
+type PaymentAttempt = Pick<Tables<'payment_attempts'>, 'id' | 'order_id' | 'expected_amount_paise' | 'currency'>
 
 export async function POST(req: NextRequest) {
   try {

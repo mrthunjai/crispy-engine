@@ -9,6 +9,7 @@ import { validateAndApplyDiscount } from '../lib/discounts'
 interface CartContextType {
   items: CartItem[]
   count: number
+  cartReady: boolean
   subtotal: number
   shippingMethod: 'standard' | 'express'
   shippingFee: number
@@ -79,6 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value: CartContextType = {
     items,
     count: store.cartCount,
+    cartReady: store.cartReady,
     subtotal,
     shippingMethod,
     shippingFee,
